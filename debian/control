@@ -1,0 +1,12 @@
+Source: ros-hydro-metaroom-xml-parser
+Section: misc
+Priority: extra
+Maintainer: Rares Ambrus <raambrus@kth.se>
+Build-Depends: debhelper (>= 9.0.0), libpcl-1.7-all-dev, libqt4-dev, ros-hydro-catkin, ros-hydro-image-geometry, ros-hydro-qt-build, ros-hydro-roscpp, ros-hydro-rospy, ros-hydro-sensor-msgs, ros-hydro-std-msgs, ros-hydro-tf
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-hydro-metaroom-xml-parser
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpcl-1.7-all, libqt4-dev, ros-hydro-image-geometry, ros-hydro-message-runtime, ros-hydro-qt-build, ros-hydro-roscpp, ros-hydro-rospy, ros-hydro-sensor-msgs, ros-hydro-std-msgs, ros-hydro-tf
+Description: Metaroom XML parser
