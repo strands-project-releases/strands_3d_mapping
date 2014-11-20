@@ -1,0 +1,58 @@
+ros-hydro-metaroom-xml-parser (0.0.7-1precise) precise; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Thu, 20 Nov 2014 00:00:00 -0000
+
+ros-hydro-metaroom-xml-parser (0.0.6-1precise) precise; urgency=high
+
+  * Fixed bug in generating depth images from saved pointclouds
+  * Contributors: Rares Ambrus
+
+ -- Rares Ambrus <raambrus@kth.se>  Wed, 19 Nov 2014 00:00:00 -0000
+
+ros-hydro-metaroom-xml-parser (0.0.5-1precise) precise; urgency=high
+
+  * 0.0.4
+  * updated changelogs
+  * Merge remote-tracking branch 'upstream/hydro-devel' into hydro-devel
+  * metaroom_xml_parser tf dependencies
+  * Contributors: Jenkins, Rares Ambrus
+
+ -- Rares Ambrus <raambrus@kth.se>  Wed, 12 Nov 2014 00:00:00 -0000
+
+ros-hydro-metaroom-xml-parser (0.0.4-1precise) precise; urgency=high
+
+  * Merge remote-tracking branch 'upstream/hydro-devel' into hydro-devel
+  * metaroom_xml_parser tf dependencies
+  * Contributors: Rares Ambrus
+
+ -- Rares Ambrus <raambrus@kth.se>  Wed, 12 Nov 2014 00:00:00 -0000
+
+ros-hydro-metaroom-xml-parser (0.0.3-1precise) precise; urgency=high
+
+  * Merge pull request #48 <https://github.com/strands-project/strands_3d_mapping/issues/48> from RaresAmbrus/hydro-devel
+    Removed deprecated function call
+  * Added maintainer details
+  * Removed pcl_ros include. Not needed
+  * Contributors: Marc Hanheide, Rares Ambrus
+
+ -- Rares Ambrus <raambrus@kth.se>  Tue, 11 Nov 2014 00:00:00 -0000
+
+ros-hydro-metaroom-xml-parser (0.0.2-1precise) precise; urgency=high
+
+  * Merge remote-tracking branch 'upstream/hydro-devel' into hydro-devel
+  * Fixed some dependencies
+  * Contributors: Rares Ambrus
+
+ -- rares <rares@todo.todo>  Tue, 11 Nov 2014 00:00:00 -0000
+
+ros-hydro-metaroom-xml-parser (0.0.1-1precise) precise; urgency=high
+
+  * Added readme
+  * renaming
+  * Contributors: Rares Ambrus
+
+ -- rares <rares@todo.todo>  Tue, 11 Nov 2014 00:00:00 -0000
+
+
