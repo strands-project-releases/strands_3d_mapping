@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>cloud_merge</name>
-  <version>0.0.6</version>
+  <version>0.0.7</version>
   <description>The cloud_merge package</description>
 
   <maintainer email="raambrus@kth.se">Rares Ambrus</maintainer>
@@ -34,6 +34,7 @@
   <run_depend>libqt4-dev</run_depend>
   <run_depend>qt_ros</run_depend>
   <run_depend>mongodb_store</run_depend>
+  <run_depend>scitos_ptu</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
