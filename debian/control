@@ -1,0 +1,12 @@
+Source: ros-indigo-scitos-ptu-sweep
+Section: misc
+Priority: extra
+Maintainer: Jaime Pulido Fentanes <pulidofentanes@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-actionlib, ros-indigo-actionlib-msgs, ros-indigo-catkin, ros-indigo-flir-pantilt-d46, ros-indigo-message-filters, ros-indigo-message-generation, ros-indigo-pcl-ros, ros-indigo-rospy, ros-indigo-sensor-msgs, ros-indigo-tf
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-indigo-scitos-ptu-sweep
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-actionlib, ros-indigo-actionlib-msgs, ros-indigo-flir-pantilt-d46, ros-indigo-message-filters, ros-indigo-pcl-ros, ros-indigo-rospy, ros-indigo-sensor-msgs, ros-indigo-tf
+Description: The scitos PTU sweep package
