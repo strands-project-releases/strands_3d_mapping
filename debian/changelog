@@ -1,0 +1,76 @@
+ros-indigo-semantic-map-launcher (0.0.10-0trusty) trusty; urgency=high
+
+  * updated changelogs
+  * Added a launch file argument to switch between NDT registration and image feature registration for registering sweeps. Default is NDT
+  * Logging the sweeps to mongodb enabled by default
+  * Added support for getting only the latest dynamic clusters
+  * separate function for updating room with metaroom
+  * Logging objects to the database parameter
+  * Added semantic_map_launcher packager (just a launch file with all the mapping nodes)
+  * Contributors: Marc Hanheide, Rares, Rares Ambrus
+  * Added a launch file argument to switch between NDT registration and image feature registration for registering sweeps. Default is NDT
+  * Logging the sweeps to mongodb enabled by default
+  * Added support for getting only the latest dynamic clusters
+  * separate function for updating room with metaroom
+  * Logging objects to the database parameter
+  * Added semantic_map_launcher packager (just a launch file with all the mapping nodes)
+  * Contributors: Rares, Rares Ambrus
+  * Added a launch file argument to switch between NDT registration and image feature registration for registering sweeps. Default is NDT
+  * Logging the sweeps to mongodb enabled by default
+  * Added support for getting only the latest dynamic clusters
+  * separate function for updating room with metaroom
+  * Logging objects to the database parameter
+  * Added semantic_map_launcher packager (just a launch file with all the mapping nodes)
+  * Contributors: Rares, Rares Ambrus
+
+ -- Rares Ambrus <raambrus@kth.se>  Wed, 12 Aug 2015 23:00:00 -0000
+
+ros-indigo-semantic-map-launcher (0.0.9-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Sun, 23 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-launcher (0.0.8-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Sat, 22 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-launcher (0.0.7-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Thu, 20 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-launcher (0.0.6-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Wed, 19 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-launcher (0.0.5-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Wed, 12 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-launcher (0.0.3-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Tue, 11 Nov 2014 20:34:00 -0000
+
+ros-indigo-semantic-map-launcher (0.0.2-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Tue, 11 Nov 2014 19:46:00 -0000
+
+ros-indigo-semantic-map-launcher (0.0.1-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Tue, 11 Nov 2014 17:30:00 -0000
+
+
