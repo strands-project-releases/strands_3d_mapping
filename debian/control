@@ -1,0 +1,12 @@
+Source: ros-indigo-semantic-map-to-2d
+Section: misc
+Priority: extra
+Maintainer: Chris Burbridge <cburbridge@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-catkin, ros-indigo-message-generation, ros-indigo-nav-msgs, ros-indigo-octomap, ros-indigo-octomap-msgs, ros-indigo-octomap-ros, ros-indigo-roscpp, ros-indigo-semantic-map-publisher, ros-indigo-sensor-msgs, ros-indigo-std-msgs, ros-indigo-std-srvs
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-indigo-semantic-map-to-2d
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-message-runtime, ros-indigo-nav-msgs, ros-indigo-octomap, ros-indigo-octomap-msgs, ros-indigo-octomap-ros, ros-indigo-roscpp, ros-indigo-semantic-map-publisher, ros-indigo-sensor-msgs, ros-indigo-std-msgs, ros-indigo-std-srvs
+Description: This package provides a node that publishes a 2d version of the latest semantic map for a fiven waypoint. A service is provided for changing the currently being published waypoint.
