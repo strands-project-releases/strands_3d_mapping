@@ -27,8 +27,15 @@ class MongodbInterface {
 public:
 
 
-    MongodbInterface(ros::NodeHandle nh);
-    ~MongodbInterface();
+    MongodbInterface(ros::NodeHandle nh)  : m_messageStoreData(nh,"data","metric_maps"), m_messageStoreSummary(nh,"summary","metric_maps")
+    {
+        m_NodeHandle = nh;
+    }
+
+    ~MongodbInterface()
+    {
+
+    }
 
     template <class PointType>
     bool logRoomToDB(SemanticRoom<PointType> aRoom, std::string roomXMLPath)
@@ -96,9 +103,9 @@ public:
     }
 
     template <class PointType>
-    std::vector<typename SemanticMapSummaryParser<PointType>::EntityStruct> getMongodbRooms()
+    std::vector<typename SemanticMapSummaryParser::EntityStruct> getMongodbRooms()
     {
-        typedef typename SemanticMapSummaryParser<PointType>::EntityStruct Entities;
+        typedef typename SemanticMapSummaryParser::EntityStruct Entities;
 
         std::vector<Entities> toRet;
 

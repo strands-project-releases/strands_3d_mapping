@@ -1,9 +1,9 @@
-#include "simpleXMLparser.h"
-#include "simpleSummaryParser.h"
+#include "simple_xml_parser.h"
+#include "simple_summary_parser.h"
 
 typedef pcl::PointXYZRGB PointType;
 
-typedef typename SimpleSummaryParser<PointType>::EntityStruct Entities;
+typedef typename SimpleSummaryParser::EntityStruct Entities;
 
 using namespace std;
 
@@ -16,10 +16,12 @@ int main(int argc, char** argv)
         return -1;
     }
 
+
+
     string folderPath = argv[1];
     string summaryXMLPath = folderPath + "/index.xml";
 
-    SimpleSummaryParser<PointType> summary_parser(summaryXMLPath);
+    SimpleSummaryParser summary_parser(summaryXMLPath);
     summary_parser.createSummaryXML(folderPath);
 
     SimpleXMLParser<PointType> simple_parser;
@@ -41,4 +43,5 @@ int main(int argc, char** argv)
             cout<<"Fx: "<<roomData.vIntermediateRoomCloudCamParams[i].fx()<<" Fy: "<<roomData.vIntermediateRoomCloudCamParams[i].fy()<<endl;
         }
     }
+
 }

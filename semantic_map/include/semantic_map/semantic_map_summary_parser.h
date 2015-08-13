@@ -4,6 +4,7 @@
 #include <pcl_ros/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/registration/distances.h>
 
 #include "ros/time.h"
 #include "ros/serialization.h"
@@ -14,20 +15,29 @@
 #include <QDir>
 #include <QXmlStreamWriter>
 
-#include "room.h"
-#include "metaroom.h"
-#include "room_xml_parser.h"
-#include "metaroom_xml_parser.h"
 #include "constants.h"
+#include "semantic_map/metaroom_xml_parser.h"
 
 
 template <class PointType>
+class SemanticRoom;
+
+template <class PointType>
+class MetaRoom;
+
+template <class PointType>
+class SemanticRoomXMLParser;
+
+template <class PointType>
+class MetaRoomXMLParser;
+
 class SemanticMapSummaryParser {
 
 public:
     struct EntityStruct{
         std::string roomXmlFile;
         std::string roomLogName;
+        std::string stringId;
         boost::posix_time::ptime roomLogStartTime, roomLogEndTime;
         Eigen::Vector4f centroid;
         bool    hasCentroid;
@@ -41,6 +51,7 @@ public:
             hasCentroid = false;
             centroid = Eigen::Vector4f::Zero();
             isMetaRoom = false;
+            stringId = "";
         }
     };
 
@@ -85,16 +96,17 @@ public:
         deleteFolderContents(semanticMapFolderPath);
     }
 
+    template <class PointType>
     void removeSemanticMapObservationInstances(int maxInstances, bool cache = false)
     {
         // first check the semanticMap cache folder size
         // update summary xml
-        createSummaryXML();
+        createSummaryXML<PointType>();
 
         // update list of rooms & metarooms
         refresh();
 
-        std::vector<SemanticMapSummaryParser<PointType>::EntityStruct> allRooms = getRooms();
+        std::vector<SemanticMapSummaryParser::EntityStruct> allRooms = getRooms();
 
         std::vector<std::pair<std::string, boost::posix_time::ptime> > currentMatches;
 
@@ -105,13 +117,25 @@ public:
             currentMatches.push_back(std::make_pair(allRooms[i].roomXmlFile,allRooms[i].roomLogStartTime));
             for (int j=i+1; j<allRooms.size();j++)
             {
-                double centroidDistance = pcl::distances::l2(allRooms[i].centroid,allRooms[j].centroid);
-                if (! (centroidDistance < ROOM_CENTROID_DISTANCE) )
+                if (allRooms[i].stringId !="")
                 {
-                    continue;
+                    // compare by waypoint id first
+                    if (!(allRooms[i].stringId == allRooms[j].stringId))
+                    {
+                        continue;
+                    } else {
+                        matches++;
+                        currentMatches.push_back(std::make_pair(allRooms[j].roomXmlFile,allRooms[j].roomLogStartTime));
+                    }
                 } else {
-                    matches++;
-                    currentMatches.push_back(std::make_pair(allRooms[j].roomXmlFile,allRooms[j].roomLogStartTime));
+                    double centroidDistance = pcl::distances::l2(allRooms[i].centroid,allRooms[j].centroid);
+                    if (! (centroidDistance < ROOM_CENTROID_DISTANCE) )
+                    {
+                        continue;
+                    } else {
+                        matches++;
+                        currentMatches.push_back(std::make_pair(allRooms[j].roomXmlFile,allRooms[j].roomLogStartTime));
+                    }
                 }
             }
 
@@ -175,7 +199,7 @@ public:
             // update list of rooms & metarooms
             if (matchesFound)
             {
-                createSummaryXML();
+                createSummaryXML<PointType>();
                 refresh();
                 allRooms = getRooms();
                 i=0;
@@ -293,6 +317,10 @@ public:
                         {
                             aEntityStruct.roomXmlFile = xmlReader->readElementText().toStdString();
                         }
+                        if (xmlReader->name() == "RoomStringId")
+                        {                            
+                            aEntityStruct.stringId = xmlReader->readElementText().toStdString();
+                        }
 
                         if (xmlReader->name() == "RoomCentroid")
                         {
@@ -330,6 +358,10 @@ public:
                             centroid(2) = centroidSlist[2].toDouble();centroid(3) = centroidSlist[3].toDouble();
                             aEntityStruct.centroid = centroid;
                         }
+                        if (xmlReader->name() == "MetaRoomStringId")
+                        {
+                            aEntityStruct.stringId = xmlReader->readElementText().toStdString();
+                        }
                         token = xmlReader->readNext();
                     }
                     toRet.push_back(aEntityStruct);
@@ -341,6 +373,7 @@ public:
         return toRet;
     }
 
+    template <class PointType>
     bool createSummaryXML(std::string rootFolder="")
     {
         QString qrootFolder;
@@ -375,8 +408,8 @@ public:
         xmlWriter->writeStartDocument();
         xmlWriter->writeStartElement("SemanticMap");
 
-        saveSemanticRooms(xmlWriter, qrootFolder);
-        saveMetaRooms(xmlWriter,qrootFolder);
+        saveSemanticRooms<PointType>(xmlWriter, qrootFolder);
+        saveMetaRooms<PointType>(xmlWriter,qrootFolder);
 
 
         xmlWriter->writeEndElement(); // SemanticMap
@@ -391,6 +424,7 @@ public:
 
 private:
 
+    template <class PointType>
     void saveMetaRooms(QXmlStreamWriter* xmlWriter, QString qrootFolder)
     {
         xmlWriter->writeStartElement("MetaRooms");
@@ -427,7 +461,7 @@ private:
                             continue;
                         } else {
                             QString savedMetaRoomXMLFile = tempMetaRoomFolder+tempMetaRoomFolderFiles[0]; // TODO for now I am assuming there is only 1 xml file in the metaroom folder. Maybe later there will be more.
-                            MetaRoom<PointType> savedMetaRoom = MetaRoomXMLParser<PointType>::loadMetaRoomFromXML(savedMetaRoomXMLFile.toStdString(),false);
+                            boost::shared_ptr<MetaRoom<PointType>> savedMetaRoom = MetaRoomXMLParser<PointType>::loadMetaRoomFromXML(savedMetaRoomXMLFile.toStdString(),false);
                             xmlWriter->writeStartElement("MetaRoom");
 
                             xmlWriter->writeStartElement("MetaRoomXMLFile");
@@ -435,9 +469,13 @@ private:
                             xmlWriter->writeEndElement();
 
                             xmlWriter->writeStartElement("MetaRoomCentroid");
-                            Eigen::Vector4f centroid = savedMetaRoom.getCentroid();
+                            Eigen::Vector4f centroid = savedMetaRoom->getCentroid();
                             QString centroidS = QString::number(centroid(0))+" "+QString::number(centroid(1))+" "+QString::number(centroid(2))+" "+QString::number(centroid(3));
                             xmlWriter->writeCharacters(centroidS);
+                            xmlWriter->writeEndElement();
+
+                            xmlWriter->writeStartElement("MetaRoomStringId");
+                            xmlWriter->writeCharacters(savedMetaRoom->m_sMetaroomStringId.c_str());
                             xmlWriter->writeEndElement();
 
                             xmlWriter->writeEndElement(); // MetaRoom
@@ -452,6 +490,7 @@ private:
         xmlWriter->writeEndElement();
     }
 
+    template <class PointType>
     void saveSemanticRooms(QXmlStreamWriter* xmlWriter, QString qrootFolder)
     {
         xmlWriter->writeStartElement("SemanticRooms");
@@ -498,6 +537,11 @@ private:
                     // parse XML file and extract some important fields with which to populate the index.html file
                     QString roomXmlFile = patrolFolder+"/"+roomFolders[k] + "/room.xml";
                     SemanticRoom<PointType> aRoom = SemanticRoomXMLParser<PointType>::loadRoomFromXML(roomXmlFile.toStdString(), false);
+                    if ((aRoom.getRoomRunNumber()== -1) && (aRoom.getRoomStringId()=="") && (aRoom.getRoomLogName()==""))
+                    {
+                        // skip this room - parsing didn't work
+                        continue;
+                    }
                     xmlWriter->writeStartElement("SemanticRoom");
 
                     xmlWriter->writeStartElement("RoomLogName");
@@ -522,6 +566,10 @@ private:
                     Eigen::Vector4f centroid = aRoom.getCentroid();
                     QString centroidS = QString::number(centroid(0))+" "+QString::number(centroid(1))+" "+QString::number(centroid(2))+" "+QString::number(centroid(3));
                     xmlWriter->writeCharacters(centroidS);
+                    xmlWriter->writeEndElement();
+
+                    xmlWriter->writeStartElement("RoomStringId");
+                    xmlWriter->writeCharacters(aRoom.getRoomStringId().c_str());
                     xmlWriter->writeEndElement();
 
                     xmlWriter->writeEndElement();

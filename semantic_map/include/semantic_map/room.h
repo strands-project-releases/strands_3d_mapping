@@ -2,7 +2,7 @@
 #define __SEMANTIC_ROOM__H
 
 #include <stdio.h>
-#include <iostream>
+#include <iosfwd>
 #include <stdlib.h>
 #include <string>
 
@@ -13,9 +13,14 @@
 
 #include <image_geometry/pinhole_camera_model.h>
 
-#include "ros/time.h"
+#include <ros/time.h>
+#include <tf/tf.h>
+
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include "tf/tf.h"
+
+#include <cv_bridge/cv_bridge.h>
+
+#include <opencv2/core/core.hpp>
 
 #include "roombase.h"
 
@@ -28,17 +33,34 @@ public:
     typedef pcl::PointCloud<PointType> Cloud;
     typedef typename Cloud::Ptr CloudPtr;
 
+    struct IntermediatePositionImages
+    {
+        std::vector<cv::Mat>                vIntermediateDepthImages;
+        std::vector<cv::Mat>                vIntermediateRGBImages;
+        tf::StampedTransform                intermediateDepthTransform;
+        tf::StampedTransform                intermediateRGBTransform;
+        image_geometry::PinholeCameraModel  intermediateRGBCamParams;
+        image_geometry::PinholeCameraModel  intermediateDepthCamParams;
+        int                                 numRGBImages, numDepthImages;
+        bool                                images_loaded;
+    };
+
 private:
 
     CloudPtr                                         m_DynamicClustersCloud;
     bool                                             m_DynamicClustersLoaded;
     std::string                                      m_DynamicClustersFilename;
     // intermediate room clouds
-    std::vector<CloudPtr>                            m_vIntermediateRoomClouds;
+    std::vector<CloudPtr>                            m_vIntermediateRoomClouds;     
     std::vector<tf::StampedTransform>                m_vIntermediateRoomCloudTransforms;
+    std::vector<tf::StampedTransform>                m_vIntermediateRoomCloudTransformsRegistered;
     std::vector<bool>                                m_vIntermediateRoomCloudsLoaded;
     std::vector<std::string>                         m_vIntermediateRoomCloudsFilenames;
     std::vector<image_geometry::PinholeCameraModel>  m_vIntermediateRoomCloudsCamParams;
+    std::vector<image_geometry::PinholeCameraModel>  m_vIntermediateRoomCloudsCamParamsCorrected;
+
+    // intermediate cloud images
+    std::vector<IntermediatePositionImages>                m_vIntermediatePositionImages;
 
     std::string                                      m_RoomStringId;
     int                                              m_RoomRunNumber;
@@ -50,282 +72,61 @@ private:
 
 public:
 
-    SemanticRoom(bool saveIntermediateClouds=true) : RoomBase<PointType>(), m_bSaveIntermediateClouds(saveIntermediateClouds), m_DynamicClustersCloud(new Cloud()),
-        m_DynamicClustersLoaded(false), m_DynamicClustersFilename("")
-    {
-        m_RoomStringId = "";
-        m_RoomLogName = "";
-        m_RoomRunNumber = -1;
-        m_bIsMetaRoom = false;
-    }
+    SemanticRoom(bool saveIntermediateClouds=true);
+    ~SemanticRoom();
 
-    ~SemanticRoom()
-    {
+    auto getDynamicClustersCloud() -> decltype(m_DynamicClustersCloud);
+    void setDynamicClustersCloud(CloudPtr dynCl);
+    void setDynamicClustersCloud(std::string dynClF);
+    bool getDynamicClustersCloudLoaded();
 
-    }
+    void clearIntermediateClouds();
+    int addIntermediateRoomCloud(CloudPtr intermediateCloud, tf::StampedTransform cloud_tf, image_geometry::PinholeCameraModel cloudCamParams=image_geometry::PinholeCameraModel());
+    void addIntermediateCloudImages(std::vector<sensor_msgs::Image::ConstPtr> sensor_rgb_images, std::vector<sensor_msgs::Image::ConstPtr> sensor_depth_images,
+                                    tf::StampedTransform rgb_transform, tf::StampedTransform depth_transform,
+                                    image_geometry::PinholeCameraModel rgb_params, image_geometry::PinholeCameraModel depth_params);
 
-    CloudPtr getDynamicClustersCloud()
-    {
-        if (!m_DynamicClustersLoaded)
-        {
-            // first load the complete point cloud
-            std::cout<<"Loading dynamic clusters cloud "<<m_DynamicClustersFilename<<std::endl;
-            pcl::PCDReader reader;
-            CloudPtr cloud (new Cloud);
-            if (m_DynamicClustersFilename!="")
-            {
-                reader.read (m_DynamicClustersFilename, *cloud);
-            }
-            this->setDynamicClustersCloud(cloud);
-        }
+    void addIntermediateCloudImages(IntermediatePositionImages newImages);
+    auto getIntermdiatePositionImages()  -> decltype(m_vIntermediatePositionImages);
 
-        return m_DynamicClustersCloud;
-    }
+    int addIntermediateRoomCloud(std::string filename, tf::StampedTransform cloud_tf, image_geometry::PinholeCameraModel cloudCamParams=image_geometry::PinholeCameraModel());
+    bool getSaveIntermediateClouds();
+    void setSaveIntermediateClouds(bool saveIntermediate);
+    auto getIntermediateClouds() -> decltype (m_vIntermediateRoomClouds);
 
-    void setDynamicClustersCloud(CloudPtr dynCl)
-    {
-        *m_DynamicClustersCloud = *dynCl;
-        m_DynamicClustersLoaded = true;
-    }
+    void clearIntermediateCloudRegisteredTransforms();
+    void addIntermediateRoomCloudRegisteredTransform(tf::StampedTransform cloud_reg_tf);
+    std::vector<tf::StampedTransform> getIntermediateCloudTransformsRegistered();
+    std::vector<tf::StampedTransform> getIntermediateCloudTransforms();
+    std::vector<image_geometry::PinholeCameraModel> getIntermediateCloudCameraParameters();
+    std::vector<image_geometry::PinholeCameraModel> getIntermediateCloudCameraParametersCorrected();
+    void clearIntermediateCloudCameraParametersCorrected();
+    void addIntermediateCloudCameraParametersCorrected(image_geometry::PinholeCameraModel params);
+    std::vector<bool>   getIntermediateCloudsLoaded();
+    std::vector<std::string>   getIntermediateCloudsFilenames();
 
-    void setDynamicClustersCloud(std::string dynClF)
-    {
-        m_DynamicClustersFilename = dynClF;
-        m_DynamicClustersLoaded = false;
-    }
+    void setRoomRunNumber(const int& roomRunNumber);
+    int getRoomRunNumber();
+    void setRoomStringId(const std::string& roomId);
+    std::string getRoomStringId();
+    void setRoomLogName(const std::string& roomLogName);
+    std::string getRoomLogName();
+    void setRoomLogStartTime(const boost::posix_time::ptime& logStartTime);
+    boost::posix_time::ptime getRoomLogStartTime();
+    void setRoomLogEndTime(const boost::posix_time::ptime& logEndTime);
+    boost::posix_time::ptime getRoomLogEndTime();
+    boost::posix_time::ptime getRoomTime();
 
-    bool getDynamicClustersCloudLoaded()
-    {
-        return m_DynamicClustersLoaded;
-    }
+    bool operator==(const SemanticRoom& rhs); // equality operator -> deep comparison of all fields
 
-    void clearIntermediateClouds()
-    {
-        m_vIntermediateRoomClouds.clear();
-        m_vIntermediateRoomCloudTransforms.clear();
-    }
+    static Eigen::Vector4f computeCentroid(CloudPtr cloud);
 
-    int addIntermediateRoomCloud(CloudPtr intermediateCloud, tf::StampedTransform cloud_tf, image_geometry::PinholeCameraModel cloudCamParams=image_geometry::PinholeCameraModel())
-    {
-        CloudPtr newCloud(new Cloud);
-        *newCloud = *intermediateCloud;
-        m_vIntermediateRoomClouds.push_back(newCloud);
-        m_vIntermediateRoomCloudTransforms.push_back(cloud_tf);
-        m_vIntermediateRoomCloudsLoaded.push_back(true);
-        m_vIntermediateRoomCloudsCamParams.push_back(cloudCamParams);
-
-        return m_vIntermediateRoomClouds.size();
-    }
-
-    int addIntermediateRoomCloud(std::string filename, tf::StampedTransform cloud_tf, image_geometry::PinholeCameraModel cloudCamParams=image_geometry::PinholeCameraModel())
-    {
-        m_vIntermediateRoomCloudTransforms.push_back(cloud_tf);
-        m_vIntermediateRoomCloudsLoaded.push_back(false);
-        m_vIntermediateRoomCloudsFilenames.push_back(filename);
-        m_vIntermediateRoomCloudsCamParams.push_back(cloudCamParams);
-
-        return m_vIntermediateRoomCloudsFilenames.size();
-    }
-
-    bool getSaveIntermediateClouds()
-    {
-        return m_bSaveIntermediateClouds;
-    }
-
-    void setSaveIntermediateClouds(bool saveIntermediate)
-    {
-        m_bSaveIntermediateClouds = saveIntermediate;
-    }
-
-    std::vector<CloudPtr> getIntermediateClouds()
-    {
-        return m_vIntermediateRoomClouds;
-    }
-
-    std::vector<tf::StampedTransform> getIntermediateCloudTransforms()
-    {
-        return m_vIntermediateRoomCloudTransforms;
-    }
-
-    std::vector<image_geometry::PinholeCameraModel> getIntermediateCloudCameraParameters()
-    {
-        return m_vIntermediateRoomCloudsCamParams;
-    }
-
-    std::vector<bool>   getIntermediateCloudsLoaded()
-    {
-        return m_vIntermediateRoomCloudsLoaded;
-    }
-
-    std::vector<std::string>   getIntermediateCloudsFilenames()
-    {
-        return m_vIntermediateRoomCloudsFilenames;
-    }
-
-    void setRoomRunNumber(const int& roomRunNumber)
-    {
-        m_RoomRunNumber = roomRunNumber;
-    }
-
-    int getRoomRunNumber()
-    {
-        return m_RoomRunNumber;
-    }
-
-    void setRoomStringId(const std::string& roomId)
-    {
-        m_RoomStringId = roomId;
-    }
-
-    std::string getRoomStringId()
-    {
-        return m_RoomStringId;
-    }
-
-    void setRoomLogName(const std::string& roomLogName)
-    {
-        m_RoomLogName = roomLogName;
-    }
-
-    std::string getRoomLogName()
-    {
-        return m_RoomLogName;
-    }
-
-    void setRoomLogStartTime(const boost::posix_time::ptime& logStartTime)
-    {
-        m_RoomLogStartTime = logStartTime;
-    }
-
-    boost::posix_time::ptime getRoomLogStartTime()
-    {
-        return m_RoomLogStartTime;
-    }
-
-    void setRoomLogEndTime(const boost::posix_time::ptime& logEndTime)
-    {
-        m_RoomLogEndTime = logEndTime;
-    }
-
-    boost::posix_time::ptime getRoomLogEndTime()
-    {
-        return m_RoomLogEndTime;
-    }
-
-    boost::posix_time::ptime getRoomTime()
-    {
-        return m_RoomLogStartTime;
-    }    
-
-    bool operator==(const SemanticRoom& rhs) // equality operator -> deep comparison of all fields
-    {
-        if (m_RoomStringId != rhs.m_RoomStringId)
-        {
-            std::cout<<"Room string ID not equal"<<std::endl;
-            return false;
-        }
-
-        if (m_RoomRunNumber != rhs.m_RoomRunNumber)
-        {
-            std::cout<<"Room run number not equal"<<std::endl;
-            return false;
-        }
-
-        if (m_RoomLogName != rhs.m_RoomLogName)
-        {
-            std::cout<<"Room log name not equal"<<std::endl;
-            return false;
-        }
-
-        if (m_RoomLogStartTime != rhs.m_RoomLogStartTime)
-        {
-            std::cout<<"Room log start time not equal"<<std::endl;
-            return false;
-        }
-
-        if (m_RoomLogEndTime != rhs.m_RoomLogEndTime)
-        {
-            std::cout<<"Room log end time not equal"<<std::endl;
-            return false;
-        }
-
-        if (this->m_CompleteRoomCloudLoaded != rhs.m_CompleteRoomCloudLoaded)
-        {
-            return false;
-        }
-
-        if (this->m_CompleteRoomCloudFilename != rhs.m_CompleteRoomCloudFilename)
-        {
-            return false;
-        }
-
-        if (this->m_CompleteRoomCloudLoaded)
-        {
-            if (this->m_CompleteRoomCloud->points.size() != rhs.m_CompleteRoomCloud->points.size())
-            {
-                return false;
-            }
-        }
-
-        if (m_vIntermediateRoomClouds.size() != rhs.m_vIntermediateRoomClouds.size())
-        {
-            std::cout<<"Room intermediate cloud vector sizes not equal"<<std::endl;
-            return false;
-        }
-
-        if (m_vIntermediateRoomCloudTransforms.size() != rhs.m_vIntermediateRoomCloudTransforms.size())
-        {
-            std::cout<<"Room intermediate cloud tranform vector sizes not equal"<<std::endl;
-            return false;
-        }
-
-        if (m_vIntermediateRoomCloudsLoaded.size() != rhs.m_vIntermediateRoomCloudsLoaded.size())
-        {
-            return false;
-        }
-
-        if (m_vIntermediateRoomCloudsFilenames.size() != rhs.m_vIntermediateRoomCloudsFilenames.size())
-        {
-            return false;
-        }
-
-        for (size_t i=0; i<m_vIntermediateRoomClouds.size(); i++)
-        {
-            if (m_vIntermediateRoomCloudsLoaded[i] != rhs.m_vIntermediateRoomCloudsLoaded[i])
-            {
-                return false;
-            }
-
-            if (m_vIntermediateRoomCloudsFilenames[i] != rhs.m_vIntermediateRoomCloudsFilenames[i])
-            {
-                return false;
-            }
-
-            if (m_vIntermediateRoomCloudsLoaded[i])
-            {
-                if (m_vIntermediateRoomClouds[i]->points.size() != rhs.m_vIntermediateRoomClouds[i]->points.size())
-                {
-                    return false;
-                }
-            }
-//            if (m_vIntermediateRoomCloudTransforms[i] != rhs.m_vIntermediateRoomCloudTransforms[i])
-//            {
-//                return false;
-//            }
-        }
-
-        return true;
-    }
-
-    static Eigen::Vector4f computeCentroid(CloudPtr cloud)
-    {
-        Eigen::Vector4f centroid;
-        pcl::compute3DCentroid(*cloud, centroid);
-        return centroid;
-    }
-
+    // public members (should be private ...)
+    int                                              pan_start, pan_step, pan_end;
+    int                                              tilt_start, tilt_step, tilt_end;
 
 };
 
+#include "room.hpp"
 
-#endif //SEMANTIC_ROOM
+#endif

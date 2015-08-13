@@ -17,6 +17,7 @@ rosbuild_prepare_qt4(QtCore QtXml)
 
 catkin_package(
    INCLUDE_DIRS include
+   LIBRARIES metaroom_xml_parser
    DEPENDS qt_build image_geometry libqt4-dev
 )
 
@@ -25,38 +26,58 @@ include_directories(include
 )
 
 set(HDRS
-    include/simpleXMLparser.h
-    include/simpleSummaryParser.h
+    include/simple_xml_parser.h
+    include/simple_summary_parser.h
+    include/load_utilities.h
+    include/load_utilities.hpp
     )
 
 set(SRCS
-    src/simpleXMLparser.cpp
-    src/simpleSummaryParser.cpp
+    src/simple_xml_parser.cpp
+    src/simple_summary_parser.cpp
+    src/load_utilities.cpp
     )
 
-add_library(metaroomXMLparser ${HDRS} ${SRCS})
+add_library(metaroom_xml_parser ${HDRS}  ${SRCS})
 
-add_executable(load_single_file src/loadSingleFileMain.cpp)
+add_executable(load_single_file src/load_single_file_main.cpp )
+
+add_executable(load_multiple_files src/load_multiple_files_main.cpp)
+
+add_executable(load_labelled_data src/load_labelled_data.cpp )
+
+ target_link_libraries(metaroom_xml_parser
+   ${catkin_LIBRARIES}
+   ${PCL_LIBRARIES}
+   ${QT_LIBRARIES}
+ )
 
  target_link_libraries(load_single_file
    ${catkin_LIBRARIES}
    ${PCL_LIBRARIES}
    ${QT_LIBRARIES}
-   metaroomXMLparser
+   metaroom_xml_parser
  )
-
-add_executable(load_multiple_files src/loadMultipleFilesMain.cpp)
 
  target_link_libraries(load_multiple_files
    ${catkin_LIBRARIES}
    ${PCL_LIBRARIES}
    ${QT_LIBRARIES}
-   metaroomXMLparser
+   metaroom_xml_parser
  )
+
+ target_link_libraries(load_labelled_data
+   ${catkin_LIBRARIES}
+   ${PCL_LIBRARIES}
+   ${QT_LIBRARIES}
+   metaroom_xml_parser
+ )
+
+
 
 ############################# INSTALL TARGETS
 
-install(TARGETS metaroomXMLparser  load_single_file load_multiple_files
+install(TARGETS metaroom_xml_parser  load_single_file load_multiple_files
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
