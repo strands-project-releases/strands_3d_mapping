@@ -1,0 +1,12 @@
+Source: ros-indigo-cloud-merge
+Section: misc
+Priority: extra
+Maintainer: Rares Ambrus <raambrus@kth.se>
+Build-Depends: debhelper (>= 9.0.0), libpcl-1.7-all-dev, libqt4-dev, ros-indigo-catkin, ros-indigo-image-geometry, ros-indigo-image-transport, ros-indigo-mongodb-store, ros-indigo-pcl-ros, ros-indigo-qt-build, ros-indigo-qt-ros, ros-indigo-roscpp, ros-indigo-semantic-map, ros-indigo-sensor-msgs, ros-indigo-std-msgs, ros-indigo-tf
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-indigo-cloud-merge
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpcl-1.7-all, libqt4-dev, ros-indigo-image-geometry, ros-indigo-image-transport, ros-indigo-mongodb-store, ros-indigo-pcl-ros, ros-indigo-qt-build, ros-indigo-qt-ros, ros-indigo-roscpp, ros-indigo-scitos-ptu, ros-indigo-semantic-map, ros-indigo-sensor-msgs, ros-indigo-std-msgs, ros-indigo-tf
+Description: The cloud_merge package
