@@ -1,3 +1,35 @@
+## strands_3d_mapping (indigo) - 0.0.12-0
+
+The packages in the `strands_3d_mapping` repository were released into the `indigo` distro by running `/usr/bin/bloom-release --non-interactive -t indigo -r indigo strands_3d_mapping` on `Fri, 21 Aug 2015 14:58:51 -0000`
+
+These packages were released:
+- `calibrate_sweeps`
+- `cloud_merge`
+- `ekz_public_lib`
+- `metaroom_xml_parser`
+- `object_manager`
+- `scitos_ptu_sweep`
+- `semantic_map`
+- `semantic_map_launcher`
+- `semantic_map_publisher`
+- `semantic_map_to_2d`
+- `strands_sweep_registration`
+
+Version of package(s) in repository `strands_3d_mapping`:
+- upstream repository: https://github.com/strands-project/strands_3d_mapping.git
+- release repository: https://github.com/strands-project-releases/strands_3d_mapping.git
+- rosdistro version: `0.0.10-0`
+- old version: `0.0.11-0`
+- new version: `0.0.12-0`
+
+Versions of tools used:
+- bloom version: `0.5.12`
+- catkin_pkg version: `0.2.4`
+- rosdep version: `0.10.30`
+- rosdistro version: `0.3.5`
+- vcstools version: `0.1.35`
+
+
 ## strands_3d_mapping (indigo) - 0.0.11-0
 
 The packages in the `strands_3d_mapping` repository were released into the `indigo` distro by running `/usr/bin/bloom-release --non-interactive -t indigo -r indigo strands_3d_mapping` on `Fri, 21 Aug 2015 14:55:39 -0000`
