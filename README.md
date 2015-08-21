@@ -1,99 +1,58 @@
-scitos_3d_mapping
-=================
+# object_manager
 
-Tools for building 3D maps and using these maps for navigation and visualization.
+This package allows interaction with the dynamic clusters segmented by the `semantic_map` package. 
 
-Start the system
-=================
-Start all the nodes in this repository using:
+## Parameters
 
-```roslaunch semantic_map_launcher semantic_map.launch```
+* `log_objects_to_db` - whether the clusters segmented should be logged to mongodb. The default value is `True`
+*  `object_folder` - the folder where to look for dynamic clusters. The default path is `~/.semanticMap/`
+*  `min_object_size` - clusters with fewer points than this threshold are discarded. The default value is `500`.
+*  `additional_views_topic` - the topic on which the additional views are published. The default is `/object_learning/object_view` 
+*  `additional_views_status_topic` - the topic on which status messages when collecting additional views are published. The default is `/object_learning/status`. The topic messages supported are `start_viewing` (only accepted if a cluster has been previously selected) and `stop_viewing`
 
+## DynamicObjectsService
 
-Data acquisition
-=================
+Message tpe:
+```
+string waypoint_id
+---
+string[] object_id
+sensor_msgs/PointCloud2[] objects
+geometry_msgs/Point[] centroids
+```
 
-To collect sweeps, use the action server from: `cloud_merge do_sweep.py`
+Given a waypoint id, this service returns all the dynamic clusters segmented at that waypoint, with their ids, point clouds and centroid. 
 
-To start the action server manually (already launched with `roslaunch semantic_map_launcher semantic_map.launch`):
+Service topic: `ObjectManager/DynamicObjectsService`
 
-```rosrun cloud_merge do_sweep.py```
+The point cloud corresponding to all the dynamic clusters is also published on the topic `"/object_manager/objects` 
+##  GetDynamicObjectService
 
-Use:
+Message type:
+```
+string waypoint_id
+string object_id
+---
+sensor_msgs/PointCloud2 object_cloud
+int32[] object_mask
+geometry_msgs/Transform transform_to_map
+int32 pan_angle
+int32 tilt_angle
+```
 
-```rosrun actionlib axclient.py /do_sweep```
+Given a waypoint id and a cluster id (should correspond to the ids received after calling the `DynamicObjectsService`), this service returns the point cloud corresponding to that dynamic cluster in the camera frame of reference and a transform to get the point cloud in the map frame of refence. In addition, a set of angles (`pan_angle`, and `tilt_angle`) to which to turn the PTU, and a set of indices representing image pixels corresponding to the dynamic cluster in the image obtained after turning the PTU to the specified angles. 
+After calling this service, the requested dynamic cluster is "selected", and after receiving the `start_viewing` mesasge on the `object_learning/status` topic, additional views received on the `/object_learning/object_view` topic will be added and logged together with this cluster.
 
-This action server takes as input a string, with the following values defined: "complete", "medium", "short", "shortest". Internally the action server from `scitos_ptu` called `ptu_action_server_metric_map.py` is used, so make sure that is running. 
+Service topic: `ObjectManager/GetDynamicObjectService`
 
-The behavior is the following:
-* If sweep type is `complete`, the sweep is started with parameters `-160 20 160 -30 30 30` -> 51 positions
-* If sweep type is `medium`, the sweep is started with parameters `-160 20 160 -30 30 -30` -> 17 positions
-* If sweep type is `short`, the sweep is started with parameters `-160 40 160 -30 30 -30` -> 9 positions
-* If sweep type is `shortest`, the sweep is started with parameters `-160 60 140 -30 30 -30` -> 6 positions (there might be blank areas with this sweep type, depending on the environment).
+The point cloud corresponding to the requested dynamic cluster is also published on the topic `/object_manager/requested_object`.
 
-Calibrate sweep poses
-==========================
-Once a number of sweeps of type "complete" have been collected, you can run the calibration routine which will compute the registration transformations for the 51 poses. Afterwards, you can execute sweeps of any type (from the types defined above) and the correct transformations will be loaded so that the sweeps are registered.
+The cluster mask is also published as an image on the topic: `/object_manager/requested_object_mask`
 
-To start the action server manually (already launched with `roslaunch semantic_map_launcher semantic_map.launch`):
+Note that the clusters are logged to the database when calling the `DynamicObjectsService` or  the `GetDynamicObjectService` (if the `log_to_db` argument is set to `True`). Calling these services multiple times does not affect (negatively) the logging. 
 
-```rosrun calibrate_sweeps calibrate_sweep_as```
+## Export logged dynamic clusters from mongodb
 
-Use:
+```rosrun object_manager load_objects_from_mongo /path/where/to/export/data/```
 
-```rosrun actionlib axclient.py /calibrate_sweeps```
-
-(Here you have to specify the minimum and maximum number of sweeps to use for the optimization. To get good registration results you should have collected > 5 sweeps. Note that only sweeps of type "complete" are used here, all others are ignored). 
-
-Once the calibration has been executed, the parameters are saved in `~/.ros/semanticMap/` from where they are loaded whenever needed. All sweeps recorded up to this point are automatically corrected using the registered sweeps.
-
-Meta-Rooms
-====================
-
-The Meta-Rooms are created by the `semantic_map semantic_map_node`. To start, run:
-
-```roslaunch semantic_map semantic_map.launch```
-
-For more information check out the `semantic_map` package. 
-
-The dynamic clusters are published on the `/local_metric_map/dynamic_clusters` topic and the Meta-Rooms are published on the `/local_metric_map/metaroom` topic. 
-
-Reinitialize the Meta-Rooms
-============================
-After the calibration you can re-initialize the metarooms (in general a good idea, as the registration between the sweeps should be better now that the poses have been calibrated).
-
-```rosservice call /local_metric_map/ClearMetaroomService "waypoint_id: - 'WayPointXYZ' initialize: true"```
-
-Set the argument initialize to `true` and provide all the waypoints for which you want to re-initialize the metarooms in the `waypoint_id` list. 
-
-Access invidual dynamic clusters
-==================================
-
-The package `object_manager` allows access to individual dynamic clusters, via a number of services. To start use:
-
-```rosrun object_manager object_manager_node```
-
-For more information check out the `object_manager` package.
-
-semantic_map_publisher
-==================================
-
-The package `semantic_map_publisher` provides a number of services for accessing previously collected data which is stored on the disk. To start use:
-
-```rosrun semantic_map_publisher semantic_map_publisher```
-
-For more information check out the `semantic_map_publisher` package.
-
-Accessing saved data  
-======================
-
-The package `metaroom_xml_parser` provides a number of utilities for reading previously saved sweep data. These include utilities for accessing:
-
-* merged point clouds
-* individual point clouds
-* dynamic clusters
-* labelled data
-* sweep xml files.
-
-Check out the `metaroom_xml_parser` package for more information. 
-
+The data exported is saved according to the sweeps where the clusters were extracted (i.e. `YYYYMMDD/patrol_run_#/room_#/...`)
