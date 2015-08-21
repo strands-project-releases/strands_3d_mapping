@@ -2,6 +2,9 @@
 Changelog for package semantic_map_publisher
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.0.12 (2015-08-21)
+-------------------
+
 0.0.11 (2015-08-21)
 -------------------
 * Fixed some dependencies
