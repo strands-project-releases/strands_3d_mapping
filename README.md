@@ -1,99 +1,107 @@
-scitos_3d_mapping
-=================
+# semantic_map_publisher
 
-Tools for building 3D maps and using these maps for navigation and visualization.
-
-Start the system
-=================
-Start all the nodes in this repository using:
-
-```roslaunch semantic_map_launcher semantic_map.launch```
+This package provides an interface to observation data previously recorded and stored on the disk. The data can be queried using the services described below.
 
 
-Data acquisition
-=================
+## WaypointInfoService
 
-To collect sweeps, use the action server from: `cloud_merge do_sweep.py`
+Message type:
 
-To start the action server manually (already launched with `roslaunch semantic_map_launcher semantic_map.launch`):
+```
+---
+string[] waypoint_id
+int32[] observation_count
+```
 
-```rosrun cloud_merge do_sweep.py```
+Returns a list of waypoints along with the number of observations collected at those waypoints.
 
-Use:
+Service name: `SemanticMapPublisher/WaypointInfoService`
 
-```rosrun actionlib axclient.py /do_sweep```
+## SensorOriginService
 
-This action server takes as input a string, with the following values defined: "complete", "medium", "short", "shortest". Internally the action server from `scitos_ptu` called `ptu_action_server_metric_map.py` is used, so make sure that is running. 
+Message type:
 
-The behavior is the following:
-* If sweep type is `complete`, the sweep is started with parameters `-160 20 160 -30 30 30` -> 51 positions
-* If sweep type is `medium`, the sweep is started with parameters `-160 20 160 -30 30 -30` -> 17 positions
-* If sweep type is `short`, the sweep is started with parameters `-160 40 160 -30 30 -30` -> 9 positions
-* If sweep type is `shortest`, the sweep is started with parameters `-160 60 140 -30 30 -30` -> 6 positions (there might be blank areas with this sweep type, depending on the environment).
+```
+string waypoint_id
+---
+geometry_msgs/Vector3 origin
+```
 
-Calibrate sweep poses
-==========================
-Once a number of sweeps of type "complete" have been collected, you can run the calibration routine which will compute the registration transformations for the 51 poses. Afterwards, you can execute sweeps of any type (from the types defined above) and the correct transformations will be loaded so that the sweeps are registered.
+Given a waypoint this service returns the origin from where the latest observation was acquired at that waypoint.
 
-To start the action server manually (already launched with `roslaunch semantic_map_launcher semantic_map.launch`):
+Service name: `SemanticMapPublisher/SensorOriginService`
 
-```rosrun calibrate_sweeps calibrate_sweep_as```
+## ObservationService
+ 
+Message type:
 
-Use:
+```
+string waypoint_id
+float64 resolution
+---
+sensor_msgs/PointCloud2 cloud
+```
 
-```rosrun actionlib axclient.py /calibrate_sweeps```
+Given a waypoint, and a resolution, this service returns the latest observation collected at that waypoint as a PointCloud with the specified resolution. 
 
-(Here you have to specify the minimum and maximum number of sweeps to use for the optimization. To get good registration results you should have collected > 5 sweeps. Note that only sweeps of type "complete" are used here, all others are ignored). 
+Service name: `SemanticMapPublisher/ObservationService`
 
-Once the calibration has been executed, the parameters are saved in `~/.ros/semanticMap/` from where they are loaded whenever needed. All sweeps recorded up to this point are automatically corrected using the registered sweeps.
+## ObservationOctomapService
 
-Meta-Rooms
-====================
+Message type:
+```
+string waypoint_id
+float64 resolution
+---
+octomap_msgs/Octomap octomap
+```
 
-The Meta-Rooms are created by the `semantic_map semantic_map_node`. To start, run:
+Same as `ObservationService` but returns the latest observation as an Octomap.
 
-```roslaunch semantic_map semantic_map.launch```
+Service name: `SemanticMapPublisher/ObservationOctomapService`
 
-For more information check out the `semantic_map` package. 
+## WaypointTimestampService
 
-The dynamic clusters are published on the `/local_metric_map/dynamic_clusters` topic and the Meta-Rooms are published on the `/local_metric_map/metaroom` topic. 
+Message type:
 
-Reinitialize the Meta-Rooms
-============================
-After the calibration you can re-initialize the metarooms (in general a good idea, as the registration between the sweeps should be better now that the poses have been calibrated).
+```
+string waypoint_id
+---
+string[] waypoint_timestamps
+```
 
-```rosservice call /local_metric_map/ClearMetaroomService "waypoint_id: - 'WayPointXYZ' initialize: true"```
+Given a waypoint, this service returns the timestamps of all the observations collected at that waypoint, as a list. 
 
-Set the argument initialize to `true` and provide all the waypoints for which you want to re-initialize the metarooms in the `waypoint_id` list. 
+Service name: `SemanticMapPublisher/WaypointTimestampService`
 
-Access invidual dynamic clusters
-==================================
+## ObservationInstanceService
 
-The package `object_manager` allows access to individual dynamic clusters, via a number of services. To start use:
+Message type:
+```
+string waypoint_id
+int64 instance_number # convention 0 - oldest available
+float64 resolution
+---
+sensor_msgs/PointCloud2 cloud
+string observation_timestamp
+```
 
-```rosrun object_manager object_manager_node```
+Given a waypoint id, an instance number and a resolution, this service returns a particular instance from the observations collected at that particular waypoint, with the desired resolution, along with the timestamp of the observation (as opposed to `ObservationService` which returns the latest observation at that particular waypoint). 
+Service name: `SemanticMapPublisher/ObservationInstanceService`
 
-For more information check out the `object_manager` package.
+## ObservationOctomapInstanceService
 
-semantic_map_publisher
-==================================
+Message type:
 
-The package `semantic_map_publisher` provides a number of services for accessing previously collected data which is stored on the disk. To start use:
+```
+string waypoint_id
+int64 instance_number # convention 0 - oldest available
+float64 resolution
+---
+octomap_msgs/Octomap octomap
+string observation_timestamp
+```
 
-```rosrun semantic_map_publisher semantic_map_publisher```
+Same as `ObservationInstanceService`, but returns the observation instance as an `Octomap`. 
 
-For more information check out the `semantic_map_publisher` package.
-
-Accessing saved data  
-======================
-
-The package `metaroom_xml_parser` provides a number of utilities for reading previously saved sweep data. These include utilities for accessing:
-
-* merged point clouds
-* individual point clouds
-* dynamic clusters
-* labelled data
-* sweep xml files.
-
-Check out the `metaroom_xml_parser` package for more information. 
-
+Service name: `SemanticMapPublisher/ObservationOctomapInstanceService`
