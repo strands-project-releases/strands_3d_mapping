@@ -1,0 +1,12 @@
+Source: ros-indigo-semantic-map-launcher
+Section: misc
+Priority: extra
+Maintainer: Rares Ambrus <raambrus@kth.se>
+Build-Depends: debhelper (>= 9.0.0), ros-indigo-calibrate-sweeps, ros-indigo-catkin, ros-indigo-cloud-merge, ros-indigo-object-manager, ros-indigo-roscpp, ros-indigo-semantic-map, ros-indigo-semantic-map-publisher
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-indigo-semantic-map-launcher
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-indigo-calibrate-sweeps, ros-indigo-cloud-merge, ros-indigo-object-manager, ros-indigo-roscpp, ros-indigo-semantic-map, ros-indigo-semantic-map-publisher
+Description: The semantic_map_launcher package
