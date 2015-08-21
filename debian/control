@@ -1,0 +1,12 @@
+Source: ros-indigo-object-manager
+Section: misc
+Priority: extra
+Maintainer: Rares Ambrus <raambrus@kth.se>
+Build-Depends: debhelper (>= 9.0.0), libpcl-1.7-all-dev, libqt4-dev, ros-indigo-catkin, ros-indigo-cv-bridge, ros-indigo-geometry-msgs, ros-indigo-image-geometry, ros-indigo-message-generation, ros-indigo-metaroom-xml-parser, ros-indigo-pcl-ros, ros-indigo-qt-build, ros-indigo-qt-ros, ros-indigo-roscpp, ros-indigo-semantic-map, ros-indigo-sensor-msgs, ros-indigo-std-msgs
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-indigo-object-manager
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpcl-1.7-all, libqt4-dev, ros-indigo-cv-bridge, ros-indigo-geometry-msgs, ros-indigo-message-runtime, ros-indigo-metaroom-xml-parser, ros-indigo-pcl-ros, ros-indigo-qt-build, ros-indigo-qt-ros, ros-indigo-roscpp, ros-indigo-semantic-map, ros-indigo-sensor-msgs, ros-indigo-std-msgs
+Description: The object_manager package
