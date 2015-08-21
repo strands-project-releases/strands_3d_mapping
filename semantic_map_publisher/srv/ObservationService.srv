@@ -1,4 +1,0 @@
-string waypoint_id
-float64 resolution
----
-sensor_msgs/PointCloud2 cloud
