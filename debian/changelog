@@ -1,0 +1,86 @@
+ros-indigo-strands-sweep-registration (0.0.12-0trusty) trusty; urgency=high
+
+
+
+ -- Johan Ekekrantz <ekz@kth.se>  Fri, 21 Aug 2015 00:00:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.11-0trusty) trusty; urgency=high
+
+  * Fixed some dependencies
+  * Moved metaroom_xml_parser headers into include/metaroom_xml_parser and adapted other projects
+  * Update README.md
+  * Update README.md
+  * Contributors: Rares Ambrus, Rareș Ambruș
+
+ -- Johan Ekekrantz <ekz@kth.se>  Fri, 21 Aug 2015 00:00:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.10-0trusty) trusty; urgency=high
+
+  * updated changelogs
+  * Added ceres and suitesparse libraries in package.xml
+  * Fixed pcl dependency and removed g2o
+  * Restructuring package to follow ros naming conventions
+  * Package renaming
+  * Contributors: Marc Hanheide, Rares Ambrus
+  * Added ceres and suitesparse libraries in package.xml
+  * Fixed pcl dependency and removed g2o
+  * Restructuring package to follow ros naming conventions
+  * Package renaming
+  * Contributors: Rares Ambrus
+  * Added ceres and suitesparse libraries in package.xml
+  * Fixed pcl dependency and removed g2o
+  * Restructuring package to follow ros naming conventions
+  * Package renaming
+  * Contributors: Rares Ambrus
+
+ -- Johan Ekekrantz <ekz@kth.se>  Thu, 13 Aug 2015 00:00:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.9-0trusty) trusty; urgency=high
+
+
+
+ -- Johan Ekekrantz <ekz@kth.se>  Sun, 23 Nov 2014 00:00:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.8-0trusty) trusty; urgency=high
+
+
+
+ -- Johan Ekekrantz <ekz@kth.se>  Sat, 22 Nov 2014 00:00:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.7-0trusty) trusty; urgency=high
+
+
+
+ -- Johan Ekekrantz <ekz@kth.se>  Thu, 20 Nov 2014 00:00:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.6-0trusty) trusty; urgency=high
+
+
+
+ -- Johan Ekekrantz <ekz@kth.se>  Wed, 19 Nov 2014 00:00:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.5-0trusty) trusty; urgency=high
+
+
+
+ -- Johan Ekekrantz <ekz@kth.se>  Wed, 12 Nov 2014 00:00:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.3-0trusty) trusty; urgency=high
+
+
+
+ -- Johan Ekekrantz <ekz@kth.se>  Tue, 11 Nov 2014 20:34:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.2-0trusty) trusty; urgency=high
+
+
+
+ -- Johan Ekekrantz <ekz@kth.se>  Tue, 11 Nov 2014 19:46:00 -0000
+
+ros-indigo-strands-sweep-registration (0.0.1-0trusty) trusty; urgency=high
+
+
+
+ -- Johan Ekekrantz <ekz@kth.se>  Tue, 11 Nov 2014 17:30:00 -0000
+
+
