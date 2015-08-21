@@ -1,0 +1,180 @@
+ros-indigo-object-manager (0.0.12-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Fri, 21 Aug 2015 00:00:00 -0000
+
+ros-indigo-object-manager (0.0.11-0trusty) trusty; urgency=high
+
+  * Changed near/far plane distance
+  * Fixed FOV frustum bug
+  * Fixed some dependencies
+  * Moved object_manager headers into include/object_manager
+  * Moved metaroom_xml_parser headers into include/metaroom_xml_parser and adapted other projects
+  * Update README.md
+  * Update README.md
+  * Added parameter for minimum clustered object size
+  * Added empty readmes
+  * Added SweepParameters class
+  * Renamed member variables
+  * Contributors: Rares Ambrus, Rareș Ambruș
+
+ -- Rares Ambrus <raambrus@kth.se>  Fri, 21 Aug 2015 00:00:00 -0000
+
+ros-indigo-object-manager (0.0.10-0trusty) trusty; urgency=high
+
+  * updated changelogs
+  * debug print
+  * Added object manager library as CMake target
+  * Safety copy
+  * Bugfix - saving additional view
+  * Logging the transform from the camera frame of ref to the map frame of ref for the additional view point clouds
+  * Logging and loading objects tracks from mongodb
+  * Added saving and loading of dynamic object tracks
+  * Added DynamicObjectTracks message
+  * Testing of saving/loading/logging additional views for dynamic objects
+  * Subscribing to the object views topic and adding views to dynamic objects
+  * Logging/reading additional views to/from mongodb
+  * Additional views and saving/loading from disk
+  * Service calls always return true
+  * Removed unnecessary compilation of classes
+  * Logging objects to the database parameter
+  * Node to export dynamic elements out of mongodb
+  * Removing debug cv window
+  * Also logging room run number (useful for reading objects  from mongo and saving them in the proper folder structure on the disk)
+  * Saving dynamic objects in mongodb
+  * Dynamic object utilities
+  * Saving and loading dynamic objects on the disk
+  * added dynamic_object_xml_parser class
+  * added dynami_object class
+  * Added dynamic_object files and openmp dependency
+  * Install targets
+  * Updated dependencies for object_manager package
+  * Removed debug cv window
+  * Returning pan and tilt PTU angles in the service message
+  * Get object service
+  * Mask extraction
+  * Added centroids
+  * Filtering ground points
+  * Added object manager class
+  * Contributors: Marc Hanheide, Rares, Rares Ambrus
+  * debug print
+  * Added object manager library as CMake target
+  * Safety copy
+  * Bugfix - saving additional view
+  * Logging the transform from the camera frame of ref to the map frame of ref for the additional view point clouds
+  * Logging and loading objects tracks from mongodb
+  * Added saving and loading of dynamic object tracks
+  * Added DynamicObjectTracks message
+  * Testing of saving/loading/logging additional views for dynamic objects
+  * Subscribing to the object views topic and adding views to dynamic objects
+  * Logging/reading additional views to/from mongodb
+  * Additional views and saving/loading from disk
+  * Service calls always return true
+  * Removed unnecessary compilation of classes
+  * Logging objects to the database parameter
+  * Node to export dynamic elements out of mongodb
+  * Removing debug cv window
+  * Also logging room run number (useful for reading objects  from mongo and saving them in the proper folder structure on the disk)
+  * Saving dynamic objects in mongodb
+  * Dynamic object utilities
+  * Saving and loading dynamic objects on the disk
+  * added dynamic_object_xml_parser class
+  * added dynami_object class
+  * Added dynamic_object files and openmp dependency
+  * Install targets
+  * Updated dependencies for object_manager package
+  * Removed debug cv window
+  * Returning pan and tilt PTU angles in the service message
+  * Get object service
+  * Mask extraction
+  * Added centroids
+  * Filtering ground points
+  * Added object manager class
+  * Contributors: Rares, Rares Ambrus
+  * debug print
+  * Added object manager library as CMake target
+  * Safety copy
+  * Bugfix - saving additional view
+  * Logging the transform from the camera frame of ref to the map frame of ref for the additional view point clouds
+  * Logging and loading objects tracks from mongodb
+  * Added saving and loading of dynamic object tracks
+  * Added DynamicObjectTracks message
+  * Testing of saving/loading/logging additional views for dynamic objects
+  * Subscribing to the object views topic and adding views to dynamic objects
+  * Logging/reading additional views to/from mongodb
+  * Additional views and saving/loading from disk
+  * Service calls always return true
+  * Removed unnecessary compilation of classes
+  * Logging objects to the database parameter
+  * Node to export dynamic elements out of mongodb
+  * Removing debug cv window
+  * Also logging room run number (useful for reading objects  from mongo and saving them in the proper folder structure on the disk)
+  * Saving dynamic objects in mongodb
+  * Dynamic object utilities
+  * Saving and loading dynamic objects on the disk
+  * added dynamic_object_xml_parser class
+  * added dynami_object class
+  * Added dynamic_object files and openmp dependency
+  * Install targets
+  * Updated dependencies for object_manager package
+  * Removed debug cv window
+  * Returning pan and tilt PTU angles in the service message
+  * Get object service
+  * Mask extraction
+  * Added centroids
+  * Filtering ground points
+  * Added object manager class
+  * Contributors: Rares, Rares Ambrus
+
+ -- Rares Ambrus <raambrus@kth.se>  Thu, 13 Aug 2015 00:00:00 -0000
+
+ros-indigo-object-manager (0.0.9-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Sun, 23 Nov 2014 00:00:00 -0000
+
+ros-indigo-object-manager (0.0.8-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Sat, 22 Nov 2014 00:00:00 -0000
+
+ros-indigo-object-manager (0.0.7-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Thu, 20 Nov 2014 00:00:00 -0000
+
+ros-indigo-object-manager (0.0.6-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Wed, 19 Nov 2014 00:00:00 -0000
+
+ros-indigo-object-manager (0.0.5-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Wed, 12 Nov 2014 00:00:00 -0000
+
+ros-indigo-object-manager (0.0.3-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Tue, 11 Nov 2014 20:34:00 -0000
+
+ros-indigo-object-manager (0.0.2-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Tue, 11 Nov 2014 19:46:00 -0000
+
+ros-indigo-object-manager (0.0.1-0trusty) trusty; urgency=high
+
+
+
+ -- Rares Ambrus <raambrus@kth.se>  Tue, 11 Nov 2014 17:30:00 -0000
+
+
