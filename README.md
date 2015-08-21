@@ -1,119 +1,99 @@
-Package for parsing saved room observations
+scitos_3d_mapping
+=================
+
+Tools for building 3D maps and using these maps for navigation and visualization.
+
+Start the system
+=================
+Start all the nodes in this repository using:
+
+```roslaunch semantic_map_launcher semantic_map.launch```
+
+
+Data acquisition
+=================
+
+To collect sweeps, use the action server from: `cloud_merge do_sweep.py`
+
+To start the action server manually (already launched with `roslaunch semantic_map_launcher semantic_map.launch`):
+
+```rosrun cloud_merge do_sweep.py```
+
+Use:
+
+```rosrun actionlib axclient.py /do_sweep```
+
+This action server takes as input a string, with the following values defined: "complete", "medium", "short", "shortest". Internally the action server from `scitos_ptu` called `ptu_action_server_metric_map.py` is used, so make sure that is running. 
+
+The behavior is the following:
+* If sweep type is `complete`, the sweep is started with parameters `-160 20 160 -30 30 30` -> 51 positions
+* If sweep type is `medium`, the sweep is started with parameters `-160 20 160 -30 30 -30` -> 17 positions
+* If sweep type is `short`, the sweep is started with parameters `-160 40 160 -30 30 -30` -> 9 positions
+* If sweep type is `shortest`, the sweep is started with parameters `-160 60 140 -30 30 -30` -> 6 positions (there might be blank areas with this sweep type, depending on the environment).
+
+Calibrate sweep poses
 ==========================
+Once a number of sweeps of type "complete" have been collected, you can run the calibration routine which will compute the registration transformations for the 51 poses. Afterwards, you can execute sweeps of any type (from the types defined above) and the correct transformations will be loaded so that the sweeps are registered.
 
-# Description	
+To start the action server manually (already launched with `roslaunch semantic_map_launcher semantic_map.launch`):
 
-The `metaroom_xml_parser` package is used to parse previously saved room observations. The data will be read into an appropriate data structure containing: merged point cloud, individual point clouds, individual RGB and depth images and corresponding camera parameters. 
+```rosrun calibrate_sweeps calibrate_sweep_as```
 
-# Usage
+Use:
 
-* Parsing one file
+```rosrun actionlib axclient.py /calibrate_sweeps```
 
-The `load_single_file` application reads in one room observation.
+(Here you have to specify the minimum and maximum number of sweeps to use for the optimization. To get good registration results you should have collected > 5 sweeps. Note that only sweeps of type "complete" are used here, all others are ignored). 
 
-```
-rosrun metaroom_xml_parser load_single_file /path/to/xml
-```
+Once the calibration has been executed, the parameters are saved in `~/.ros/semanticMap/` from where they are loaded whenever needed. All sweeps recorded up to this point are automatically corrected using the registered sweeps.
 
-* Parsing multiple observations
+Meta-Rooms
+====================
 
-The 'load_multiple_files' application reads in multiple room observations and returns a vector. It takes as input the root folder where the observations are stored. 
+The Meta-Rooms are created by the `semantic_map semantic_map_node`. To start, run:
 
-```
-rosrun metaroom_xml_parser load_multiple_files /path/to/folder
-```
+```roslaunch semantic_map semantic_map.launch```
 
-* Parsing labelled data
+For more information check out the `semantic_map` package. 
 
-The `load_labelled_data` application reads labelled data for observations taken at a particular waypoint. The waypoint id and the folder where the observations are stored are taken in as parameters.
+The dynamic clusters are published on the `/local_metric_map/dynamic_clusters` topic and the Meta-Rooms are published on the `/local_metric_map/metaroom` topic. 
 
-```
-rosrun metaroom_xml_parser load_labelled_data` /path/to/sweeps WayPointXYZ
-```
+Reinitialize the Meta-Rooms
+============================
+After the calibration you can re-initialize the metarooms (in general a good idea, as the registration between the sweeps should be better now that the poses have been calibrated).
 
+```rosservice call /local_metric_map/ClearMetaroomService "waypoint_id: - 'WayPointXYZ' initialize: true"```
 
-## Utilities
+Set the argument initialize to `true` and provide all the waypoints for which you want to re-initialize the metarooms in the `waypoint_id` list. 
 
-A number of utilities are provided by this package, for easy data manipulation. The definitions can be seen in the file `load_utilities.h`
+Access invidual dynamic clusters
+==================================
 
-### Merged cloud utilities
+The package `object_manager` allows access to individual dynamic clusters, via a number of services. To start use:
 
-The complete cloud datatype is:
+```rosrun object_manager object_manager_node```
 
-```template <class PointType> boost::shared_ptr<pcl::PointCloud<PointType>>```
+For more information check out the `object_manager` package.
 
-The utilities for loading only the merged cloud are:
-* `loadMergedCloudFromSingleSweep` # returns one cloud
-* `loadMergedCloudFromMultipleSweeps` # returns a vector of merged clouds, one for each sweep
-* `loadMergedCloudForTopologicalWaypoint` # same as above
- 
-### Intermediate cloud utilities
+semantic_map_publisher
+==================================
 
-The intermediate cloud datatype is:
-```
-    template <class PointType>
-    struct IntermediateCloudCompleteData
-    {
-        std::vector<boost::shared_ptr<pcl::PointCloud<PointType>>>  vIntermediateRoomClouds;
-        std::vector<tf::StampedTransform>                           vIntermediateRoomCloudTransforms;
-        std::vector<image_geometry::PinholeCameraModel>             vIntermediateRoomCloudCamParams;
-        std::vector<cv::Mat>                                        vIntermediateRGBImages; // type CV_8UC3
-        std::vector<cv::Mat>                                        vIntermediateDepthImages; // type CV_16UC1
-    };
-```
+The package `semantic_map_publisher` provides a number of services for accessing previously collected data which is stored on the disk. To start use:
 
-The utilities for loading the intermediate clouds are:
-* `loadIntermediateCloudsFromSingleSweep`                  # just the point clouds
-* `loadIntermediateCloudsCompleteDataFromSingleSweep`      # complete data, with transforms and images
-* `loadIntermediateCloudsFromMultipleSweeps`
-* `loadIntermediateCloudsCompleteDataFromMultipleSweeps`
-* `loadIntermediateCloudsForTopologicalWaypoint`
-* `loadIntermediateCloudsCompleteDataForTopologicalWaypoint`
- 
+```rosrun semantic_map_publisher semantic_map_publisher```
 
-### Sweep XML utilities
+For more information check out the `semantic_map_publisher` package.
 
-The sweep XML is an `std::string`
+Accessing saved data  
+======================
 
-The utilities for finding sweep XMLS are:
-* `getSweepXmls` # takes a folder where to search as argument. Returns a `vector<string>`
-* `getSweepXmlsForTopologicalWaypoint`
+The package `metaroom_xml_parser` provides a number of utilities for reading previously saved sweep data. These include utilities for accessing:
 
-### Dynamic cluster utilities
+* merged point clouds
+* individual point clouds
+* dynamic clusters
+* labelled data
+* sweep xml files.
 
-The dynamic clusters type is:
-
-```template <class PointType> std::vector<boost::shared_ptr<pcl::PointCloud<PointType>>>```
-
-The dynamic cluster  utilities are:
-* `loadDynamicClustersFromSingleSweep`
-* `loadDynamicClustersFromMultipleSweeps`
-* `loadDynamicClustersForTopologicalWaypoint`
- 
-
-### Labelled data utilities
-
-The labelled data type is:
-
-```
-    template <class PointType>
-    struct LabelledData
-    {
-        boost::shared_ptr<pcl::PointCloud<PointType>>               completeCloud;
-        tf::StampedTransform                                        transformToGlobal;
-        tf::Vector3                                                 sweepCenter;
-        std::vector<boost::shared_ptr<pcl::PointCloud<PointType>>>  objectClouds;
-        std::vector<std::string>                                    objectLabels;
-        boost::posix_time::ptime                                    sweepTime;
-        std::string                                                 waypoint;
-
-    };
-```
-
-The labelled data utilities are:
-* `loadLabelledDataFromSingleSweep`
-
-
-
-
+Check out the `metaroom_xml_parser` package for more information. 
 
