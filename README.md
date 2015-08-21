@@ -1,99 +1,34 @@
-scitos_3d_mapping
-=================
+# semantic_map_launcher  
 
-Tools for building 3D maps and using these maps for navigation and visualization.
-
-Start the system
-=================
-Start all the nodes in this repository using:
+This launches the metric mapping / semantic mapping nodes from the `strands_3d_mapping` repository.
 
 ```roslaunch semantic_map_launcher semantic_map.launch```
 
+## Nodes started
 
-Data acquisition
-=================
+* `cloud_merge`
+* `semantic_map`
+* `calibrate_sweep_as`
+* `semantic_map_publisher`
+* `objcet_manager`
+* `do_sweep`
 
-To collect sweeps, use the action server from: `cloud_merge do_sweep.py`
+Note: the  `ptu_action_server_metric_map` node needs to be started separetely with:
 
-To start the action server manually (already launched with `roslaunch semantic_map_launcher semantic_map.launch`):
+```rosrun scitos_ptu ptu_action_server_metric_map.py```
 
-```rosrun cloud_merge do_sweep.py```
+## Parameters
 
-Use:
+The parameters accepted by the launch file are:
 
-```rosrun actionlib axclient.py /do_sweep```
-
-This action server takes as input a string, with the following values defined: "complete", "medium", "short", "shortest". Internally the action server from `scitos_ptu` called `ptu_action_server_metric_map.py` is used, so make sure that is running. 
-
-The behavior is the following:
-* If sweep type is `complete`, the sweep is started with parameters `-160 20 160 -30 30 30` -> 51 positions
-* If sweep type is `medium`, the sweep is started with parameters `-160 20 160 -30 30 -30` -> 17 positions
-* If sweep type is `short`, the sweep is started with parameters `-160 40 160 -30 30 -30` -> 9 positions
-* If sweep type is `shortest`, the sweep is started with parameters `-160 60 140 -30 30 -30` -> 6 positions (there might be blank areas with this sweep type, depending on the environment).
-
-Calibrate sweep poses
-==========================
-Once a number of sweeps of type "complete" have been collected, you can run the calibration routine which will compute the registration transformations for the 51 poses. Afterwards, you can execute sweeps of any type (from the types defined above) and the correct transformations will be loaded so that the sweeps are registered.
-
-To start the action server manually (already launched with `roslaunch semantic_map_launcher semantic_map.launch`):
-
-```rosrun calibrate_sweeps calibrate_sweep_as```
-
-Use:
-
-```rosrun actionlib axclient.py /calibrate_sweeps```
-
-(Here you have to specify the minimum and maximum number of sweeps to use for the optimization. To get good registration results you should have collected > 5 sweeps. Note that only sweeps of type "complete" are used here, all others are ignored). 
-
-Once the calibration has been executed, the parameters are saved in `~/.ros/semanticMap/` from where they are loaded whenever needed. All sweeps recorded up to this point are automatically corrected using the registered sweeps.
-
-Meta-Rooms
-====================
-
-The Meta-Rooms are created by the `semantic_map semantic_map_node`. To start, run:
-
-```roslaunch semantic_map semantic_map.launch```
-
-For more information check out the `semantic_map` package. 
-
-The dynamic clusters are published on the `/local_metric_map/dynamic_clusters` topic and the Meta-Rooms are published on the `/local_metric_map/metaroom` topic. 
-
-Reinitialize the Meta-Rooms
-============================
-After the calibration you can re-initialize the metarooms (in general a good idea, as the registration between the sweeps should be better now that the poses have been calibrated).
-
-```rosservice call /local_metric_map/ClearMetaroomService "waypoint_id: - 'WayPointXYZ' initialize: true"```
-
-Set the argument initialize to `true` and provide all the waypoints for which you want to re-initialize the metarooms in the `waypoint_id` list. 
-
-Access invidual dynamic clusters
-==================================
-
-The package `object_manager` allows access to individual dynamic clusters, via a number of services. To start use:
-
-```rosrun object_manager object_manager_node```
-
-For more information check out the `object_manager` package.
-
-semantic_map_publisher
-==================================
-
-The package `semantic_map_publisher` provides a number of services for accessing previously collected data which is stored on the disk. To start use:
-
-```rosrun semantic_map_publisher semantic_map_publisher```
-
-For more information check out the `semantic_map_publisher` package.
-
-Accessing saved data  
-======================
-
-The package `metaroom_xml_parser` provides a number of utilities for reading previously saved sweep data. These include utilities for accessing:
-
-* merged point clouds
-* individual point clouds
-* dynamic clusters
-* labelled data
-* sweep xml files.
-
-Check out the `metaroom_xml_parser` package for more information. 
+* `save_intermediate_clouds` : whether to save the intermediate point clouds from the sweeps to the disk. Default `true`
+* `save_intermediate_images` : whether to save all the images making up an intermediate cloud to the disk (this takes a lot of space!!). Default `false`
+* `log_to_db` : log the sweeps to mongodb. Default `true`
+* `log_objects_to_db` : log the dynamic clusters to mongodb. Default `true`
+* `cleanup` : at startup, delete everything in the `~/.semanticMap/` folder. Default `false` 
+* `max_instances` : maximum number of sweeps, per waypoint to keep in the `~/.semanticMap/` folder. Default: `10`
+* `cache_old_data` : if there are more sweeps per waypoint than the `max_instances` parameter, delete them or move them to the cache folder `~/.semanticMap/cache/`. Default  `false`, i.e. delete older sweeps.
+* `update_metaroom` : update the metaroom with new sweeps. Default `true`
+* `newest_dynamic_clusters` : compute dynamic clusters by comparing the latest sweep with the previous one (as opposed to comparing the latest sweep to the metaroom). Default `true`
+* `min_object_size` : the minimum number of points for a cluster to be reported. Default `500`
 
