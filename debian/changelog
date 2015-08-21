@@ -1,0 +1,85 @@
+ros-indigo-semantic-map-to-2d (0.0.12-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Fri, 21 Aug 2015 00:00:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.11-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Fri, 21 Aug 2015 00:00:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.10-1trusty) trusty; urgency=high
+
+  * updated changelogs
+  * Remove bad install target.
+  * Add depend on semantic_map_publisher.
+  * Add depend on semantic_map_publisher.
+  * Fix gencpp dependency.
+  * Add node to publish 2d map of waypoint sweeps.
+  * Contributors: Chris Burbridge, Marc Hanheide
+  * Remove bad install target.
+  * Add depend on semantic_map_publisher.
+  * Add depend on semantic_map_publisher.
+  * Fix gencpp dependency.
+  * Add node to publish 2d map of waypoint sweeps.
+  * Contributors: Chris Burbridge
+  * Remove bad install target.
+  * Add depend on semantic_map_publisher.
+  * Add depend on semantic_map_publisher.
+  * Fix gencpp dependency.
+  * Add node to publish 2d map of waypoint sweeps.
+  * Contributors: Chris Burbridge
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Thu, 13 Aug 2015 00:00:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.9-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Sun, 23 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.8-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Sat, 22 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.7-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Thu, 20 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.6-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Wed, 19 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.5-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Wed, 12 Nov 2014 00:00:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.3-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Tue, 11 Nov 2014 20:34:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.2-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Tue, 11 Nov 2014 19:46:00 -0000
+
+ros-indigo-semantic-map-to-2d (0.0.1-1trusty) trusty; urgency=high
+
+
+
+ -- Chris Burbridge <cburbridge@gmail.com>  Tue, 11 Nov 2014 17:30:00 -0000
+
+
