@@ -1,4 +1,0 @@
-string waypoint_id
-float64 resolution
----
-octomap_msgs/Octomap octomap
